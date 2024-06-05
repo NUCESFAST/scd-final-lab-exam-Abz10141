@@ -1,0 +1,80 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: ./client
+    ports:
+      - "0932:0932"
+    depends_on:
+      - auth
+      - classrooms
+      - event-bus
+      - post
+    container_name: 20i0932_frontend
+
+  auth:
+    build:
+      context: ./Auth
+    ports:
+      - "2932:2932"
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
+    depends_on:
+      - mongo
+    volumes:
+      - ./Auth:/usr/src/20i0932_auth
+    container_name: 20i0932_auth
+
+  classrooms:
+    build:
+      context: ./Classrooms
+    ports:
+      - "3932:3932"
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
+    depends_on:
+      - mongo
+    volumes:
+      - ./Classrooms:/usr/src/20i0932_classrooms
+    container_name: 20i0932_classrooms
+
+  event-bus:
+    build:
+      context: ./event-bus
+    ports:
+      - "4932:4932"
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
+    depends_on:
+      - mongo
+    volumes:
+      - ./event-bus:/usr/src/20i0932_event-bus
+    container_name: 20i0932_event-bus
+
+  post:
+    build:
+      context: ./Post
+    ports:
+      - "5932:5932"
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
+    depends_on:
+      - mongo
+    volumes:
+      - ./Post:/usr/src/20i0932_post
+    container_name: 20i0932_post
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    container_name: 20i0932_mongo
+
+volumes:
+  mongo-data:
